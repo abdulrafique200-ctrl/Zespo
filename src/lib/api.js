@@ -2,13 +2,7 @@ import { supabase } from "./supabaseClient";
 
 /* ---------------- auth ---------------- */
 
-export async function signUp({ email, password, realName, username, inviteCode }) {
-  const { data: codeOk, error: codeErr } = await supabase.rpc("redeem_invite_code", {
-    p_code: inviteCode.trim(),
-  });
-  if (codeErr) throw new Error("Couldn't validate invite code — try again.");
-  if (!codeOk) throw new Error("That invite code isn't valid.");
-
+export async function signUp({ email, password, realName, username }) {
   const { data, error } = await supabase.auth.signUp({ email, password });
   if (error) throw error;
 
