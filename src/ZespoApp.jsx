@@ -200,7 +200,6 @@ function AuthScreen({ theme }) {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [inviteCode, setInviteCode] = useState("");
 
   async function doLogin() {
     setErr(""); setBusy(true);
@@ -210,16 +209,16 @@ function AuthScreen({ theme }) {
       setErr(e.message || "Couldn't log in.");
     } finally { setBusy(false); }
   }
-
-  async function doRegister() {
+async function doRegister() {
     setErr("");
-    if (!realName.trim() || !username.trim() || !email.trim() || !password || !inviteCode.trim()) {
+    if (!realName.trim() || !username.trim() || !email.trim() || !password) {
       setErr("Fill in every field first."); return;
     }
     if (password.length < 8) { setErr("Password needs to be at least 8 characters."); return; }
     setBusy(true);
     try {
-      await api.signUp({ email: email.trim(), password, realName, username, inviteCode });
+      await api.signUp({ email: email.trim(), password, realName, username });
+  
     } catch (e) {
       setErr(e.message || "Couldn't create that account.");
     } finally { setBusy(false); }
@@ -251,8 +250,7 @@ function AuthScreen({ theme }) {
           <Field label="Real name" value={realName} onChange={setRealName} placeholder="Full name" />
           <Field label="Email" value={email} onChange={setEmail} placeholder="you@example.com" />
           <Field label="Username" value={username} onChange={setUsername} placeholder="pick a username" />
-          <Field label="Password" value={password} onChange={setPassword} placeholder="8+ characters" type="password" />
-          <Field label="Invite code" value={inviteCode} onChange={setInviteCode} placeholder="ask the moderator if you don't have it" onEnter={doRegister} />
+          <Field label="Password" value={password} onChange={setPassword} placeholder="8+ characters" type="password" onEnter={doRegister} />
           {err && <div className="text-xs text-red-400 font-mono2">{err}</div>}
           <button type="button" disabled={busy} onClick={doRegister} className="mt-2 rounded-xl py-3 font-semibold text-black active:opacity-80 active:scale-[0.98] transition-transform disabled:opacity-50 flex items-center justify-center gap-2" style={{ background: theme.accent }}>
             {busy && <Loader2 size={14} className="animate-spin" />} Create account
